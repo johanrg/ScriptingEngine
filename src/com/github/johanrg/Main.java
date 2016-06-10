@@ -1,3 +1,5 @@
+package com.github.johanrg;
+
 import com.github.johanrg.ast.ASTNode;
 import com.github.johanrg.compiler.*;
 
