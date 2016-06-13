@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public class Parser {
     private final String source;
-    private final List<Token> tokens;
+    private final Queue<Token> tokens;
     private final ASTNode astRootNode;
     private Stack<Token> operatorStack = new Stack<>();
     private Stack<ASTNode> expressionStack = new Stack<>();
@@ -22,8 +22,9 @@ public class Parser {
     public Parser(Lexer lexer) throws CompilerException {
         this.tokens = lexer.getTokens();
         this.source = lexer.getSource();
-        int i = parseStatement(0);
-        astRootNode = parseExpression(0);
+
+        parseStatement();
+        astRootNode = parseExpression();
     }
 
     /**
@@ -50,46 +51,20 @@ public class Parser {
         throw new CompilerException("function typeCheck is missing something", node.getLocation(), source);
     }
 
-    private int parseStatement(int index) throws CompilerException {
-        Stack<Token> tokenStack = new Stack<>();
-        Stack<ASTNode> astNodeStack = new Stack<>();
-
-        int i = index;
-        while (i < tokens.size()) {
-            Token token = tokens.get(i);
-/*        for (Token token : tokens.stream().skip(index).collect(Collectors.toList())) {*/
-            TokenType tokenType = token.getTokenType();
-            if (tokenType.isKeyword()) {
-                if (tokenType.isKeywordType()) {
-                    // Just push it
-                    tokenStack.push(token);
-                }
-            } else if (tokenType == TokenType.IDENTIFIER) {
-                if (tokenType.isIdentifier() && !tokenStack.empty() && tokenStack.peek().getTokenType().isKeywordType()) {
-                    Token varType = tokenStack.pop();
-
-                    ASTVariable var = new ASTVariable(varType.getTokenType(), token.getLocation(), (String) token.getValue(), 0);
-                    expressionStack.push(var);
-                    ASTNode expression = parseExpression(++i);
-                    System.out.println(expression);
-                }
-            }
-            ++i;
+    private void parseStatement() throws CompilerException {
+        while (!tokens.isEmpty()) {
+            Token token = tokens.poll();
         }
-        return 0;
     }
 
     /**
      * Pops the operator from the operator stack and 1 or 2 expressions depending if the operator
      * is unary or binary.
      *
-     * @param operatorStack   stack of operators
-     * @param expressionStack stack of expressions, literals or operator/operand(s)
      * @throws CompilerException exception if the stacks differ from what is expected.
      */
-    private void pushOperatorOnExpressionStack(Stack<Token> operatorStack, Stack<ASTNode> expressionStack) throws CompilerException {
+    private void pushOperatorOnExpressionStack() throws CompilerException {
         Token operator = operatorStack.pop();
-        Queue<Token> = new
         if (operator.getTokenType().isUnaryOperator()) {
             if (expressionStack.size() < 1) {
                 throw new CompilerException("Expected operand", operator.getLocation(), source);
@@ -122,13 +97,12 @@ public class Parser {
     /**
      * This parses all types of expressions
      *
-     * @param index position to start parsing
      * @return ASTNode node to the root of the AST tree.
      * @throws CompilerException
      */
-    private ASTNode parseExpression(int index) throws CompilerException {
-
-        for (Token token : tokens.stream().skip(index).collect(Collectors.toList())) {
+    private ASTNode parseExpression() throws CompilerException {
+        while (!tokens.isEmpty()) {
+            Token token = tokens.poll();
             if (token.getTokenType() == TokenType.OPEN_PARENTHESES) {
                 operatorStack.push(token);
 
@@ -143,7 +117,7 @@ public class Parser {
                                         !operatorStack.peek().getTokenType().isRightAssociative() &&
                                         !tokSym.isRightAssociative()))) {
 
-                    pushOperatorOnExpressionStack(operatorStack, expressionStack);
+                    pushOperatorOnExpressionStack();
                 }
                 operatorStack.pop(); // pops OPEN_PARENTHESES
 
@@ -155,7 +129,7 @@ public class Parser {
                                         (!operatorStack.peek().getTokenType().isRightAssociative() &&
                                                 !tokSym.isRightAssociative())))) {
 
-                    pushOperatorOnExpressionStack(operatorStack, expressionStack);
+                    pushOperatorOnExpressionStack();
                 }
                 operatorStack.push(token);
 
@@ -165,7 +139,7 @@ public class Parser {
         }
 
         while (operatorStack.size() > 0) {
-            pushOperatorOnExpressionStack(operatorStack, expressionStack);
+            pushOperatorOnExpressionStack();
         }
 
         typeCheck(expressionStack.peek());

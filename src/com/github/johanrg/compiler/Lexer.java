@@ -1,7 +1,9 @@
 package com.github.johanrg.compiler;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  *  Lexer
@@ -15,7 +17,7 @@ public class Lexer {
     private int pos = 0;
     private int line = 1;
     private int column = 1;
-    private final List<Token> tokens = new ArrayList<>();
+    private final Queue<Token> tokens = new ArrayDeque<>();
     private TokenTypeIdentifier identify = new TokenTypeIdentifier();
     private Token previousToken = null;
     private int balancedParantheses = 0;
@@ -219,7 +221,7 @@ public class Lexer {
      * @param token new token to add.
      */
     private void addToken(Token token) {
-        tokens.add(token);
+        tokens.offer(token);
         previousToken = token;
     }
 
@@ -261,7 +263,7 @@ public class Lexer {
         return c == ';';
     }
 
-    public List<Token> getTokens() {
+    public Queue<Token> getTokens() {
         return tokens;
     }
 
