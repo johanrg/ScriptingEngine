@@ -20,11 +20,11 @@ public class ASTLiteral extends ASTNode {
     }
 
     public boolean isZero() {
-        if (tokenType == TokenType.TYPE_INT) {
+        if (tokenType == TokenType.TYPEDEF_INT) {
             return ((Integer) value).equals(0);
-        } else if (tokenType == TokenType.TYPE_FLOAT) {
+        } else if (tokenType == TokenType.TYPEDEF_FLOAT) {
             return ((Float) value).equals(0.f);
-        } else if (tokenType == TokenType.TYPE_DOUBLE) {
+        } else if (tokenType == TokenType.TYPEDEF_DOUBLE) {
             return ((Double) value).equals(0.0);
         }
 
@@ -34,18 +34,14 @@ public class ASTLiteral extends ASTNode {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ASTLiteral: ");
-        if (tokenType == TokenType.TYPE_DOUBLE) {
+        sb.append(super.toString()).append(" ");
+        if (tokenType == TokenType.TYPEDEF_DOUBLE) {
             sb.append(Double.toString((Double) value));
-        } else if (tokenType == TokenType.TYPE_FLOAT) {
+        } else if (tokenType == TokenType.TYPEDEF_FLOAT) {
             sb.append(Float.toString((Float) value));
-        } else if (tokenType == TokenType.TYPE_INT) {
+        } else if (tokenType == TokenType.TYPEDEF_INT) {
             sb.append(Integer.toString((Integer) value));
         }
-        if (location != null) {
-            sb.append(String.format(" (%d, %d)", location.getLine(), location.getColumn()));
-        }
-
         return sb.toString();
     }
 }

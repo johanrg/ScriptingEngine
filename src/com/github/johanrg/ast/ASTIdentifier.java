@@ -27,10 +27,6 @@ public class ASTIdentifier extends ASTNode {
 
     @Override
     public String toString() {
-        String s = "ASTIdentifier: " + name;
-        if (location != null) {
-            s += String.format(" (%d, %d)", location.getLine(), location.getColumn());
-        }
-        return s;
+        return super.toString() + " " + name;
     }
 }

@@ -30,6 +30,9 @@ public class Lexer {
         // The added 0 to the end of the string makes us not having to test the if the string has reached it's end
         // everywhere. A valid character will always have at least a 0 that follows after it and this can be checked in
         // one place and only when no other valid characters are left.
+        if (source.length() == 0) {
+            throw new CompilerException("Unexpected end of line", new Location(line, column));
+        }
         this.source = source + "\0";
 
         for (; ; ) {
@@ -48,9 +51,9 @@ public class Lexer {
 
             } else if (isEndOfStatement(c)) {
                 if (balancedParantheses > 0) {
-                    throw new CompilerException("Expected ')'", new Location(line, column));
+                    throw new CompilerException("Expected ')'", new Location(line, column), source);
                 } else if (balancedParantheses < 0) {
-                    throw new CompilerException("Expected ';'", new Location(line, column));
+                    throw new CompilerException("Expected ';'", new Location(line, column), source);
                 }
                 eatTheChar();
 
@@ -58,7 +61,7 @@ public class Lexer {
                 break;
 
             } else {
-                throw new CompilerException(String.format("Syntax error: '%c'", c), new Location(line, column));
+                throw new CompilerException(String.format("Syntax error: '%c'", c), new Location(line, column), source);
             }
         }
     }
@@ -89,19 +92,19 @@ public class Lexer {
 
         TokenType type = identify.getType(operator.toString());
         if (type.isBinaryOperator()) {
-            if (previousToken != null && (previousToken.getSymbolType().isBinaryOperator() ||
-                    previousToken.getSymbolType() == TokenType.OPEN_PARENTHESES)) {
+            if (previousToken != null && (previousToken.getTokenType().isBinaryOperator() ||
+                    previousToken.getTokenType() == TokenType.OPEN_PARENTHESES)) {
                 if (type.isOrCanBeUnaryOperator()) {
                     if (type == TokenType.BINOP_ADD) {
                         type = TokenType.UNARY_PLUS;
                     } else if (type == TokenType.BINOP_SUBTRACT) {
                         type = TokenType.UNARY_MINUS;
                     } else {
-                        throw new CompilerException("Expected value", location);
+                        throw new CompilerException("Expected value", location, source);
                     }
                 }
-            } else if (previousToken != null && previousToken.getSymbolType().isUnaryOperator()) {
-                throw new CompilerException("Expected value", location);
+            } else if (previousToken != null && previousToken.getTokenType().isUnaryOperator()) {
+                throw new CompilerException("Expected value", location, source);
             } else if (previousToken == null && type.isBinaryOperator())
                 if (type.isOrCanBeUnaryOperator()) {
                     if (type == TokenType.BINOP_ADD) {
@@ -109,17 +112,21 @@ public class Lexer {
                     } else if (type == TokenType.BINOP_SUBTRACT) {
                         type = TokenType.UNARY_MINUS;
                     } else {
-                        throw new CompilerException("Expected value", location);
+                        throw new CompilerException("Expected value", location, source);
                     }
                 }
             return new Token(type, location, operator.toString());
         } else if (type.isUnaryOperator()) {
-            if (previousToken != null && (previousToken.getSymbolType().isUnaryOperator() ||
-                    previousToken.getSymbolType().isNumber())) {
-                throw new CompilerException("Expected value", location);
+            if (previousToken != null && (previousToken.getTokenType().isUnaryOperator() ||
+                    previousToken.getTokenType().isNumber())) {
+                throw new CompilerException("Expected value", location, source);
+            }
+        } else if (type.isAssignmentOperator()) {
+            if (previousToken != null && !previousToken.getTokenType().isIdentifier()) {
+               throw new CompilerException("Expected identifier", previousToken.getLocation(), source);
             }
         } else if (!type.isPrecedensOperator()) {
-            throw new CompilerException(String.format("'%s' is not a valid operator", operator.toString()), location);
+            throw new CompilerException(String.format("'%s' is not a valid operator", operator.toString()), location, source);
         }
 
         return new Token(type, location, operator.toString());
@@ -150,11 +157,11 @@ public class Lexer {
         } while (isContinuingNumber(c));
 
         if (isFloat) {
-            return new Token(TokenType.TYPE_FLOAT, location, Float.parseFloat(number.toString()));
+            return new Token(TokenType.TYPEDEF_FLOAT, location, Float.parseFloat(number.toString()));
         } else if (isDouble) {
-            return new Token(TokenType.TYPE_DOUBLE, location, Double.parseDouble(number.toString()));
+            return new Token(TokenType.TYPEDEF_DOUBLE, location, Double.parseDouble(number.toString()));
         } else {
-            return new Token(TokenType.TYPE_INT, location, Integer.parseInt(number.toString()));
+            return new Token(TokenType.TYPEDEF_INT, location, Integer.parseInt(number.toString()));
         }
     }
 
@@ -230,11 +237,12 @@ public class Lexer {
 
     private boolean isOperator(char c) {
         return c == '+' || c == '-' || c == '/' || c == '*' || c == '%' || c == '^' || c == '=' || c == '!' ||
-                c == '(' || c == ')' || c == '&' || c == '|';
+                c == '(' || c == ')' || c == '&' || c == '|' || c == '=';
     }
 
     private boolean isContinuingOperator(char c) {
-        return c == '+' || c == '-' || c == '/' || c == '*' || c == '%' || c == '=' || c == '&' || c == '|';
+        return c == '+' || c == '-' || c == '/' || c == '*' || c == '%' || c == '=' || c == '&'
+                || c == '|' || c == '=';
     }
 
     private boolean isContinuingIdentifier(char c) {
@@ -255,5 +263,9 @@ public class Lexer {
 
     public List<Token> getTokens() {
         return tokens;
+    }
+
+    public String getSource() {
+        return source;
     }
 }

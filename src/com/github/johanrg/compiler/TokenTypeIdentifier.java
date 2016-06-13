@@ -24,10 +24,9 @@ class TokenTypeIdentifier {
         return token != null && token.isKeyword();
     }
 
-    boolean isNumber(TokenType symbol) {
-        TokenTypeGroup g = symbol.getTokenTypeGroup();
-        return g == TokenTypeGroup.VARIABLE_TYPE &&
-                (symbol == TokenType.TYPE_INT || symbol == TokenType.TYPE_DOUBLE || symbol == TokenType.TYPE_FLOAT);
+    boolean isNumber(TokenType tokenType) {
+        TokenTypeGroup g = tokenType.getTokenTypeGroup();
+        return tokenType == TokenType.TYPEDEF_INT || tokenType == TokenType.TYPEDEF_DOUBLE || tokenType == TokenType.TYPEDEF_FLOAT;
     }
 
     boolean isOperator(String tokenStr) {

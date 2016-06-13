@@ -27,10 +27,6 @@ public class ASTBinaryOperator extends ASTNode {
 
     @Override
     public String toString() {
-        String s = "ASTBinaryOperator: " + tokenType.toString();
-        if (location != null) {
-            s += String.format(" (%d, %d)", location.getLine(), location.getColumn());
-        }
-        return s;
+        return super.toString() + " ";
     }
 }

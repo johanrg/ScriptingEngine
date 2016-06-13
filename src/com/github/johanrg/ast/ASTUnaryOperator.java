@@ -21,10 +21,6 @@ public class ASTUnaryOperator extends ASTNode {
 
     @Override
     public String toString() {
-        String s = "ASTUnaryOperator: " + tokenType.toString();
-        if (location != null) {
-            s += String.format(" (%d, %d)", location.getLine(), location.getColumn());
-        }
-        return s;
+        return super.toString() + " " + tokenType.toString();
     }
 }

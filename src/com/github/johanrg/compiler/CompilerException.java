@@ -13,6 +13,7 @@ public class CompilerException extends Exception {
     }
 
     CompilerException(String message, Location location, String source) {
+        super(String.format("%s (line %d, column %d)\n%s", message, location.getLine(), location.getColumn(), new SourceLocation(source, location).toString()));
 
     }
 

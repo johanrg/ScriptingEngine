@@ -28,7 +28,7 @@ public class ASTNode {
 
     @Override
     public String toString() {
-        String s = "ASTNode: " + tokenType.toString();
+        String s = getClass().getName() + " " + tokenType.toString();
         if (location != null) {
             s += String.format(" (%d, %d)", location.getLine(), location.getColumn());
         }

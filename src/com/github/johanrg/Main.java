@@ -6,59 +6,114 @@ import com.github.johanrg.compiler.*;
 public class Main {
 
     public static void main(String[] args) {
-        try {
-            Lexer p;
-            Parser l;
+            Lexer l;
+            Parser p;
             Expression e;
             ASTNode r;
 
-
-            p = new Lexer("10 / (5 + (10 - 10) - 5);");
-            l = new Parser(p.getTokens());
-            e = new Expression(l.getAstRootNode());
+        try {
+            l = new Lexer("int a = 10;");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
             r = e.solve();
             System.out.println(r);
-
-            p = new Lexer("10;");
-            l = new Parser(p.getTokens());
-            e = new Expression(l.getAstRootNode());
-            r = e.solve();
-            System.out.println(r);
-
-
-            p = new Lexer("-10;");
-            l = new Parser(p.getTokens());
-            e = new Expression(l.getAstRootNode());
-            r = e.solve();
-            System.out.println(r);
-
-            p = new Lexer("+10;");
-            l = new Parser(p.getTokens());
-            e = new Expression(l.getAstRootNode());
-            r = e.solve();
-            System.out.println(r);
-
-            p = new Lexer("((1*2)+3-(-4*5));");
-            l = new Parser(p.getTokens());
-            e = new Expression(l.getAstRootNode());
-            r = e.solve();
-            System.out.println(r);
-
-            p = new Lexer("((1.f*2.f)+3.f/(-4.f*5.f));");
-            l = new Parser(p.getTokens());
-            e = new Expression(l.getAstRootNode());
-            r = e.solve();
-            System.out.println(r);
-
-            p = new Lexer("(1 + (-2 * 3));");
-            l = new Parser(p.getTokens());
-            e = new Expression(l.getAstRootNode());
-            r = e.solve();
-            System.out.println(r);
-
-
-        } catch (CompilerException e) {
-            System.out.println(e.getMessage());
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
         }
+/*
+
+        try {
+            l = new Lexer("");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        try {
+            l = new Lexer("10 + b;");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        try {
+            l = new Lexer("10 / (5 + (10 - 10) - 5);");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        try {
+            l = new Lexer("10;");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+
+        try {
+            l = new Lexer("-10;");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        try {
+            l = new Lexer("+10;");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        try {
+            l = new Lexer("((1*2)+3-(-4*5));");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        try {
+            l = new Lexer("((1.f*2.f)+3.f/(-4.f*5.f));");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+        try {
+            l = new Lexer("(1 + (-2 * 3));");
+            p = new Parser(l);
+            e = new Expression(p.getAstRootNode());
+            r = e.solve();
+            System.out.println(r);
+        } catch (CompilerException e1) {
+            System.out.println(e1.getMessage());
+        }
+
+*/
+
     }
 }

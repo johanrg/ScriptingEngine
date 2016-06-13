@@ -15,8 +15,8 @@ public class SourceLocation {
         this.location = location;
     }
 
-    String findLine(int line) {
-        if (line == 1) {
+    String findLine(long line) {
+        if (location.getLine() == 1) {
             return source;
         }
 
@@ -29,13 +29,22 @@ public class SourceLocation {
                 return null;
             }
             ++currentLine;
-        } while (currentLine < line);
+        } while (currentLine != line);
 
         return source.substring(pos);
     }
 
-    String show() {
-        String result = null;
+    @Override
+    public String toString() {
+        String result = findLine(location.getLine());
+        int pos = result.indexOf('\n');
+        if (pos == -1) {
+            pos = result.length();
+        }
+        result = result.substring(0, pos) + "\n";
+
+        result += new String(new char[(int) location.getColumn() - 1]).replace('\0', ' ') + "^";
         return result;
     }
+
 }

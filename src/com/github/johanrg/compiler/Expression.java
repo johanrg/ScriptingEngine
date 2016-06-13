@@ -81,15 +81,15 @@ public class Expression {
             ASTLiteral unaryNode = solveExpression(((ASTUnaryOperator) node).getNode());
 
             if (node.getType() == TokenType.UNARY_MINUS) {
-                if (unaryNode.getType() == TokenType.TYPE_INT) {
-                    Object value = multiply(unaryNode, new ASTLiteral(TokenType.TYPE_INT, null, -1));
-                    return new ASTLiteral(TokenType.TYPE_INT, unaryNode.getLocation(), value);
-                } else if (unaryNode.getType() == TokenType.TYPE_FLOAT) {
-                    Object value = multiply(unaryNode, new ASTLiteral(TokenType.TYPE_FLOAT, null, -1.f));
-                    return new ASTLiteral(TokenType.TYPE_FLOAT, unaryNode.getLocation(), value);
-                } else if (unaryNode.getType() == TokenType.TYPE_DOUBLE) {
-                    Object value = multiply(unaryNode, new ASTLiteral(TokenType.TYPE_DOUBLE, null, -1.0));
-                    return new ASTLiteral(TokenType.TYPE_DOUBLE, unaryNode.getLocation(), value);
+                if (unaryNode.getType() == TokenType.TYPEDEF_INT) {
+                    Object value = multiply(unaryNode, new ASTLiteral(TokenType.TYPEDEF_INT, null, -1));
+                    return new ASTLiteral(TokenType.TYPEDEF_INT, unaryNode.getLocation(), value);
+                } else if (unaryNode.getType() == TokenType.TYPEDEF_FLOAT) {
+                    Object value = multiply(unaryNode, new ASTLiteral(TokenType.TYPEDEF_FLOAT, null, -1.f));
+                    return new ASTLiteral(TokenType.TYPEDEF_FLOAT, unaryNode.getLocation(), value);
+                } else if (unaryNode.getType() == TokenType.TYPEDEF_DOUBLE) {
+                    Object value = multiply(unaryNode, new ASTLiteral(TokenType.TYPEDEF_DOUBLE, null, -1.0));
+                    return new ASTLiteral(TokenType.TYPEDEF_DOUBLE, unaryNode.getLocation(), value);
                 }
             } else if (node.getType() == TokenType.UNARY_PLUS) {
                 // NOTE(Johan): Ignoring and passing value, am I missing anything?
@@ -103,11 +103,11 @@ public class Expression {
     private Object add(ASTLiteral lhs, ASTLiteral rhs) throws CompilerException {
         Object result;
         if (lhs.getType().equals(rhs.getType())) {
-            if (lhs.getType() == TokenType.TYPE_INT) {
+            if (lhs.getType() == TokenType.TYPEDEF_INT) {
                 result = (Integer) lhs.getValue() + (Integer) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_FLOAT) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_FLOAT) {
                 result = (Float) lhs.getValue() + (Float) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_DOUBLE) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_DOUBLE) {
                 result = (Double) lhs.getValue() + (Double) rhs.getValue();
             } else {
                 throw new CompilerException("Invalid type", lhs.getLocation());
@@ -122,11 +122,11 @@ public class Expression {
     private Object subtract(ASTLiteral lhs, ASTLiteral rhs) throws CompilerException {
         Object result;
         if (lhs.getType().equals(rhs.getType())) {
-            if (lhs.getType() == TokenType.TYPE_INT) {
+            if (lhs.getType() == TokenType.TYPEDEF_INT) {
                 result = (Integer) lhs.getValue() - (Integer) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_FLOAT) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_FLOAT) {
                 result = (Float) lhs.getValue() - (Float) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_DOUBLE) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_DOUBLE) {
                 result = (Double) lhs.getValue() - (Double) rhs.getValue();
             } else {
                 throw new CompilerException("Invalid type", lhs.getLocation());
@@ -141,11 +141,11 @@ public class Expression {
     private Object multiply(ASTLiteral lhs, ASTLiteral rhs) throws CompilerException {
         Object result;
         if (lhs.getType().equals(rhs.getType())) {
-            if (lhs.getType() == TokenType.TYPE_INT) {
+            if (lhs.getType() == TokenType.TYPEDEF_INT) {
                 result = (Integer) lhs.getValue() * (Integer) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_FLOAT) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_FLOAT) {
                 result = (Float) lhs.getValue() * (Float) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_DOUBLE) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_DOUBLE) {
                 result = (Double) lhs.getValue() * (Double) rhs.getValue();
             } else {
                 throw new CompilerException("Invalid type", lhs.getLocation());
@@ -159,11 +159,11 @@ public class Expression {
 
     private Object divide(ASTLiteral lhs, ASTLiteral rhs) throws CompilerException {
         if (lhs.getType().equals(rhs.getType())) {
-            if (lhs.getType() == TokenType.TYPE_INT) {
+            if (lhs.getType() == TokenType.TYPEDEF_INT) {
                 return (Integer) lhs.getValue() / (Integer) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_FLOAT) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_FLOAT) {
                 return (Float) lhs.getValue() / (Float) rhs.getValue();
-            } else if (lhs.getType() == TokenType.TYPE_DOUBLE) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_DOUBLE) {
                 return (Double) lhs.getValue() / (Double) rhs.getValue();
             } else {
                 throw new CompilerException("Invalid type", lhs.getLocation());
@@ -176,7 +176,7 @@ public class Expression {
     private Integer modulus(ASTLiteral lhs, ASTLiteral rhs) throws CompilerException {
         Object result;
         if (lhs.getType().equals(rhs.getType())) {
-            if (lhs.getType() == TokenType.TYPE_INT) {
+            if (lhs.getType() == TokenType.TYPEDEF_INT) {
                 return (Integer) lhs.getValue() % (Integer) rhs.getValue();
             } else {
                 throw new CompilerException("Invalid type", lhs.getLocation());
@@ -188,11 +188,11 @@ public class Expression {
 
     private Object power(ASTLiteral lhs, ASTLiteral rhs) throws CompilerException {
         if (lhs.getType().equals(rhs.getType())) {
-            if (lhs.getType() == TokenType.TYPE_DOUBLE) {
+            if (lhs.getType() == TokenType.TYPEDEF_DOUBLE) {
                 return Math.pow((Double) lhs.getValue(), (Double) rhs.getValue());
-            } else if (lhs.getType() == TokenType.TYPE_INT) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_INT) {
                 return new Double(Math.pow((Integer) lhs.getValue(), (Integer) rhs.getValue())).intValue();
-            } else if (lhs.getType() == TokenType.TYPE_FLOAT) {
+            } else if (lhs.getType() == TokenType.TYPEDEF_FLOAT) {
                 return new Double(Math.pow((Float) lhs.getValue(), (Float) rhs.getValue())).floatValue();
             } else {
                 throw new CompilerException("Invalid type", lhs.getLocation());

@@ -9,7 +9,7 @@ import com.github.johanrg.compiler.TokenType;
  */
 public class ASTVariable extends ASTNode {
     private final String name;
-    private final Object value;
+    private Object value;
 
     public ASTVariable(TokenType tokenType, Location location, String name, Object value) {
         super(tokenType, location);
@@ -25,11 +25,22 @@ public class ASTVariable extends ASTNode {
         return value;
     }
 
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
     @Override
     public String toString() {
-        String s = "ASTIdentifier: " + name;
-        if (location != null) {
-            s += String.format(" (%d, %d)", location.getLine(), location.getColumn());
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString()).append(" ").append(getName()).append(" = ");;
+        if (tokenType == TokenType.TYPEDEF_DOUBLE) {
+            sb.append(Double.toString((Double) value));
+        } else if (tokenType == TokenType.TYPEDEF_FLOAT) {
+            sb.append(Float.toString((Float) value));
+        } else if (tokenType == TokenType.TYPEDEF_INT) {
+            sb.append(Integer.toString((Integer) value));
         }
-        return s;
-    }}
+        return sb.toString();
+    }
+}
+

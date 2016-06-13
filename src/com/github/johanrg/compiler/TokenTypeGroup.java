@@ -6,7 +6,6 @@ package com.github.johanrg.compiler;
  */
 enum TokenTypeGroup {
     NONE,
-    VARIABLE_TYPE,
     KEYWORD,
     IDENTIFIER,
     BINARY_OPERATOR,
@@ -14,4 +13,5 @@ enum TokenTypeGroup {
     DELIMITER,
     ASSIGNMENT_OPERATOR,
     EQUALITY_OPERATOR,
+    TYPEDEF;
 }

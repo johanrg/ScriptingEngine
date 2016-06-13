@@ -7,13 +7,13 @@ package com.github.johanrg.compiler;
 public enum TokenType {
     NONE("", TokenTypeGroup.NONE, 0, false),
 
-    FOR("for", TokenTypeGroup.KEYWORD, 0, false),
     IDENTIFIER("", TokenTypeGroup.IDENTIFIER, 0, false),
 
-    TYPE_DOUBLE("double", TokenTypeGroup.VARIABLE_TYPE, 0, false),
-    TYPE_FLOAT("float", TokenTypeGroup.VARIABLE_TYPE, 0, false),
-    TYPE_INT("int", TokenTypeGroup.VARIABLE_TYPE, 0, false),
-    TYPE_STRING("string", TokenTypeGroup.VARIABLE_TYPE, 0, false),
+    FOR("for", TokenTypeGroup.KEYWORD, 0, false),
+    TYPEDEF_INT("int", TokenTypeGroup.KEYWORD, 0, false),
+    TYPEDEF_FLOAT("float", TokenTypeGroup.KEYWORD, 0, false),
+    TYPEDEF_DOUBLE("double", TokenTypeGroup.KEYWORD, 0, false),
+    TYPEDEF_STRING("string", TokenTypeGroup.KEYWORD, 0, false),
 
     ASSIGNMENT("=", TokenTypeGroup.ASSIGNMENT_OPERATOR, 1, true),
     ADD_ASSIGNMENT("+=", TokenTypeGroup.ASSIGNMENT_OPERATOR, 1, true),
@@ -81,25 +81,45 @@ public enum TokenType {
                 this == BINOP_ADD || this == BINOP_SUBTRACT;
     }
 
+    public boolean isAssignmentOperator() {
+        return tokenTypeGroup == TokenTypeGroup.ASSIGNMENT_OPERATOR;
+    }
+
     public boolean isUnaryOperator() {
         return tokenTypeGroup == TokenTypeGroup.UNARY_OPERATOR;
     }
 
     public boolean isNumber() {
-        return this == TYPE_INT || this == TYPE_FLOAT || this == TYPE_DOUBLE;
+        return this == TYPEDEF_INT || this == TYPEDEF_FLOAT || this == TYPEDEF_DOUBLE;
+    }
+
+    public boolean isIdentifier() {
+        return this == IDENTIFIER;
     }
 
     public boolean isKeyword() {
         return this.tokenTypeGroup == TokenTypeGroup.KEYWORD;
     }
 
+    public boolean isTypeDef() {
+        return this == TokenType.TYPEDEF_INT || this == TokenType.TYPEDEF_FLOAT ||
+                this == TokenType.TYPEDEF_DOUBLE || this == TokenType.TYPEDEF_STRING;
+    }
+
+    public boolean isKeywordType() {
+        return this == TokenType.TYPEDEF_INT || this == TokenType.TYPEDEF_FLOAT || this == TokenType.TYPEDEF_DOUBLE;
+    }
     public boolean isRightAssociative() {
         return rightAssociative;
     }
 
     @Override
     public String toString() {
-        return symbol;
+        if (symbol.length() > 0) {
+            return symbol;
+        } else {
+            return super.toString();
+        }
     }
 
     public TokenTypeGroup getTokenTypeGroup() {
@@ -110,4 +130,4 @@ public enum TokenType {
         return precedence;
     }
 
-    }
+}
