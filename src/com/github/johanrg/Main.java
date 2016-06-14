@@ -13,11 +13,8 @@ public class Main {
 
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append("int a;\n")
-                    .append("a = 10;\n")
-                    .append("{\n")
-                    .append("int b = 10;\n")
-                    .append("}\n");
+/*            sb.append("int a(int b, int d = 0){int x = 0;} int bbb() {int ddd = 0;}");*/
+            sb.append("int a(int b, int c){int x = 10;}");
 
             l = new Lexer(sb.toString());
             p = new Parser(l);

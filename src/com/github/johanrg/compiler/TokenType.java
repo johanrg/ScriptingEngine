@@ -7,7 +7,6 @@ package com.github.johanrg.compiler;
 public enum TokenType {
     NONE("", TokenTypeGroup.NONE, 0, false),
 
-    END_OF_STATEMENT(";", TokenTypeGroup.DELIMITER, 0, true),
     IDENTIFIER("", TokenTypeGroup.IDENTIFIER, 0, false),
 
     TYPEDEF_INT("", TokenTypeGroup.TYPEDEF_VALUE, 0, false),
@@ -52,12 +51,15 @@ public enum TokenType {
     UNARY_POST_INCREMENT("++", TokenTypeGroup.UNARY_OPERATOR, 14, true),
     UNARY_POST_DECREMENT("--", TokenTypeGroup.UNARY_OPERATOR, 14, true),
 
-    OPEN_PARENTHESES("(", TokenTypeGroup.DELIMITER, 0, false), // Should have precedence 15 but are handled
-    CLOSE_PARENTHESES(")", TokenTypeGroup.DELIMITER, 0, false), // separately, setting them to 15 will mess up the parser.
+    OPEN_PARENTHESES("(", TokenTypeGroup.DELIMITER, 0, false), // Is seen as having precedence 15 in expressions but are handled
+    CLOSE_PARENTHESES(")", TokenTypeGroup.DELIMITER, 0, false), // separately and can be seen as just having the highest precedence of all.
     OPEN_BRACE("{", TokenTypeGroup.DELIMITER, 0, false),
     CLOSE_BRACE("}", TokenTypeGroup.DELIMITER, 0, false),
     OPEN_BRACKET("[", TokenTypeGroup.DELIMITER, 0, false),
-    CLOSE_BRACKET("]", TokenTypeGroup.DELIMITER, 0, false);
+    CLOSE_BRACKET("]", TokenTypeGroup.DELIMITER, 0, false),
+    END_OF_STATEMENT(";", TokenTypeGroup.DELIMITER, 0, true),
+    COMMA(",", TokenTypeGroup.DELIMITER, 0, true),
+    COLON(":", TokenTypeGroup.DELIMITER, 0, true);
 
     private final String symbol;
     private final TokenTypeGroup tokenTypeGroup;

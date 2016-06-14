@@ -1,6 +1,7 @@
 package com.github.johanrg.ast;
 
-import java.util.ArrayList;
+import com.github.johanrg.compiler.Location;
+import com.github.johanrg.compiler.TokenType;
 import java.util.List;
 
 /**
@@ -8,10 +9,11 @@ import java.util.List;
  * @since 6/14/2016.
  */
 
-public class ASTCompoundStatement {
+public class ASTCompoundStatement extends ASTNode {
     private final List<ASTNode> statements;
 
-    public ASTCompoundStatement(List<ASTNode> statements) {
+    public ASTCompoundStatement(Location location, List<ASTNode> statements) {
+        super(TokenType.NONE, location);
        this.statements = statements;
     }
 

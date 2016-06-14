@@ -1,13 +1,13 @@
 package com.github.johanrg.compiler;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
+
+import javax.xml.stream.events.Characters;
+import java.util.*;
 
 /**
- *  Lexer
- *  Creates tokens from the source string
+ * Lexer
+ * Creates tokens from the source string
  *
  * @author Johan Gustafsson
  * @since 2016-05-28
@@ -19,8 +19,8 @@ public class Lexer {
     private int column = 1;
     private final Queue<Token> tokens = new ArrayDeque<>();
     private final TokenTypeIdentifier identify = new TokenTypeIdentifier();
-    private int balancedParantheses = 0;
     private Token previousToken = null;
+    private final Stack<Token> delimiterStack = new Stack<>();
 
     /**
      * The constructor creates tokens from the source string
@@ -52,15 +52,12 @@ public class Lexer {
                 addToken(lexNumber(c));
 
             } else if (isDelimiter(c)) {
-                addToken(new Token(identify.getType(c), new Location(line, column), c));
-                eatTheChar();
+                addToken(lexDelimiter(c));
+
+            } else if (isDivider(c)) {
+                addToken(lexDivider(c));
 
             } else if (isEndOfStatement(c)) {
-                if (balancedParantheses > 0) {
-                    throw new CompilerException("Expected ')'", new Location(line, column), source);
-                } else if (balancedParantheses < 0) {
-                    throw new CompilerException("Expected ';'", new Location(line, column), source);
-                }
                 addToken(new Token(TokenType.END_OF_STATEMENT, new Location(line, column), c));
                 eatTheChar();
 
@@ -70,6 +67,11 @@ public class Lexer {
             } else {
                 throw new CompilerException(String.format("Syntax error: '%c'", c), new Location(line, column), source);
             }
+        }
+
+        if (!delimiterStack.isEmpty()) {
+            Token token = delimiterStack.pop();
+            throw new CompilerException(String.format("Opening delimiter '%s' expects a closing delimiter", token.getTokenType().getSymbol()), token.getLocation(), source);
         }
     }
 
@@ -87,13 +89,6 @@ public class Lexer {
         do {
             eatTheChar();
             operator.append(c);
-            if (c == '(') {
-                ++balancedParantheses;
-                break;
-            } else if (c == ')') { // Never more than one at a time.
-                --balancedParantheses;
-                break;
-            }
             c = peekAtChar();
         } while (isContinuingOperator(c));
 
@@ -130,9 +125,9 @@ public class Lexer {
             }
         } else if (type.isAssignmentOperator()) {
             if (previousToken != null && !previousToken.getTokenType().isIdentifier()) {
-               throw new CompilerException("Expected identifier", previousToken.getLocation(), source);
+                throw new CompilerException("Assignment expected identifier on left side", location, source);
             }
-        } else if (!type.isPrecedensOperator()) {
+        } else {
             throw new CompilerException(String.format("'%s' is not a valid operator", operator.toString()), location, source);
         }
 
@@ -178,7 +173,7 @@ public class Lexer {
      * @param c a valid alpha char
      * @return Token
      */
-    private Token lexIdentifier(char c) {
+    private Token lexIdentifier(char c) throws CompilerException {
         Location location = new Location(line, column);
         StringBuilder identifier = new StringBuilder();
 
@@ -193,6 +188,38 @@ public class Lexer {
         }
 
         return new Token(TokenType.IDENTIFIER, location, identifier.toString());
+    }
+
+    private Token lexDelimiter(char c) throws CompilerException {
+        TokenType type = identify.getType(c);
+        Token token = new Token(type, new Location(line, column), c);
+        if (type == TokenType.OPEN_BRACE || type == TokenType.OPEN_BRACKET || type == TokenType.OPEN_PARENTHESES) {
+            delimiterStack.push(token);
+        } else {
+            if (!delimiterStack.isEmpty()) {
+                TokenType stackType = delimiterStack.peek().getTokenType();
+                if ((type == TokenType.CLOSE_PARENTHESES && stackType != TokenType.OPEN_PARENTHESES) ||
+                        (type == TokenType.CLOSE_BRACE && stackType != TokenType.OPEN_BRACE) ||
+                        (type == TokenType.CLOSE_BRACKET) && stackType != TokenType.OPEN_BRACKET) {
+                    throw new CompilerException(String.format("Did not expect '%s'", type.getSymbol()), new Location(line, column), source);
+                }
+            } else {
+                throw new CompilerException(String.format("Did not expect '%s'", type.getSymbol()), new Location(line, column), source);
+            }
+            delimiterStack.pop();
+        }
+        eatTheChar();
+        return token;
+    }
+
+    private Token lexDivider(char c) throws CompilerException {
+        TokenType type = identify.getType(c);
+        if (previousToken.getTokenType() != TokenType.IDENTIFIER &&
+                previousToken.getTokenType().getTokenTypeGroup() != TokenTypeGroup.TYPEDEF_VALUE) {
+            throw new CompilerException("Did not expect a ','", new Location(line, column), source);
+        }
+        eatTheChar();
+        return new Token(type, new Location(line, column), c);
     }
 
     private char peekAtChar() {
@@ -243,7 +270,7 @@ public class Lexer {
     }
 
     private boolean isOperator(char c) {
-        return "+-/*%^=!()^|=".indexOf(c) != -1;
+        return "+-/*%^=!^|=".indexOf(c) != -1;
     }
 
     private boolean isContinuingOperator(char c) {
@@ -252,6 +279,10 @@ public class Lexer {
 
     private boolean isDelimiter(char c) {
         return "()[]{}".indexOf(c) != -1;
+    }
+
+    private boolean isDivider(char c) {
+        return ",:".indexOf(c) != -1;
     }
 
     private boolean isContinuingIdentifier(char c) {
