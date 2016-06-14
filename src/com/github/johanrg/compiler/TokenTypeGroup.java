@@ -13,5 +13,6 @@ enum TokenTypeGroup {
     DELIMITER,
     ASSIGNMENT_OPERATOR,
     EQUALITY_OPERATOR,
+    TYPEDEF_VALUE,
     TYPEDEF;
 }

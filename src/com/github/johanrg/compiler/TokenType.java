@@ -7,18 +7,19 @@ package com.github.johanrg.compiler;
 public enum TokenType {
     NONE("", TokenTypeGroup.NONE, 0, false),
 
+    END_OF_STATEMENT("", TokenTypeGroup.DELIMITER, 0, false),
     IDENTIFIER("", TokenTypeGroup.IDENTIFIER, 0, false),
 
-    TYPEDEF_INT("", TokenTypeGroup.TYPEDEF, 0, false),
-    TYPEDEF_FLOAT("", TokenTypeGroup.TYPEDEF, 0, false),
-    TYPEDEF_DOUBLE("", TokenTypeGroup.TYPEDEF, 0, false),
-    TYPEDEF_STRING("", TokenTypeGroup.TYPEDEF, 0, false),
+    TYPEDEF_INT("", TokenTypeGroup.TYPEDEF_VALUE, 0, false),
+    TYPEDEF_FLOAT("", TokenTypeGroup.TYPEDEF_VALUE, 0, false),
+    TYPEDEF_DOUBLE("", TokenTypeGroup.TYPEDEF_VALUE, 0, false),
+    TYPEDEF_STRING("", TokenTypeGroup.TYPEDEF_VALUE, 0, false),
 
-    FOR("for", TokenTypeGroup.KEYWORD, 0, false),
-    INT("int", TokenTypeGroup.KEYWORD, 0, false),
-    FLOAT("float", TokenTypeGroup.KEYWORD, 0, false),
-    DOUBLE("double", TokenTypeGroup.KEYWORD, 0, false),
-    STRING("string", TokenTypeGroup.KEYWORD, 0, false),
+    FOR("for", TokenTypeGroup.TYPEDEF, 0, false),
+    INT("int", TokenTypeGroup.TYPEDEF, 0, false),
+    FLOAT("float", TokenTypeGroup.TYPEDEF, 0, false),
+    DOUBLE("double", TokenTypeGroup.TYPEDEF, 0, false),
+    STRING("string", TokenTypeGroup.TYPEDEF, 0, false),
 
     ASSIGNMENT("=", TokenTypeGroup.ASSIGNMENT_OPERATOR, 1, true),
     ADD_ASSIGNMENT("+=", TokenTypeGroup.ASSIGNMENT_OPERATOR, 1, true),

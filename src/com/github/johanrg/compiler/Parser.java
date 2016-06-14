@@ -3,7 +3,6 @@ package com.github.johanrg.compiler;
 import com.github.johanrg.ast.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * The parser builds the complete AST tree for the scripting language.
@@ -15,15 +14,15 @@ public class Parser {
     private final String source;
     private final Queue<Token> tokens;
     private final ASTNode astRootNode;
-    private Stack<Token> operatorStack = new Stack<>();
-    private Stack<ASTNode> expressionStack = new Stack<>();
+    private final Stack<Token> operatorStack = new Stack<>();
+    private final Stack<ASTNode> expressionStack = new Stack<>();
     private final Map<String, ASTVariable> variableList = new HashMap<>();
 
     public Parser(Lexer lexer) throws CompilerException {
         this.tokens = lexer.getTokens();
         this.source = lexer.getSource();
 
-        parseStatement();
+        ASTNode statement = parseStatement();
         astRootNode = parseExpression();
     }
 
@@ -51,10 +50,37 @@ public class Parser {
         throw new CompilerException("function typeCheck is missing something", node.getLocation(), source);
     }
 
-    private void parseStatement() throws CompilerException {
-        while (!tokens.isEmpty()) {
-            Token token = tokens.poll();
+    private ASTVariable createASTVariable(TokenType tokenType, Location location, String name, Object value) throws CompilerException {
+
+        if (tokenType == TokenType.INT) {
+            return new ASTVariable(TokenType.TYPEDEF_INT, location, name, value);
+        } else if (tokenType == TokenType.FLOAT) {
+            return new ASTVariable(TokenType.TYPEDEF_FLOAT, location, name, value);
+        } else if (tokenType == TokenType.DOUBLE) {
+            return new ASTVariable(TokenType.TYPEDEF_DOUBLE, location, name, value);
+        } else if (tokenType == TokenType.STRING) {
+            return new ASTVariable(TokenType.TYPEDEF_STRING, location, name, value);
         }
+        throw new CompilerException("Unsupported TYPEDEF in createASTVariable");
+    }
+
+    private ASTNode parseStatement() throws CompilerException {
+        Token token;
+        Token assignment;
+        while (!tokens.isEmpty()) {
+            if ((token = found(TokenTypeGroup.TYPEDEF)) != null) {
+                Token identifier = expect(TokenType.IDENTIFIER);
+                if (found(TokenType.END_OF_STATEMENT) != null) {
+                    return createASTVariable(token.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), 0);
+                } else if ((assignment = found(TokenTypeGroup.ASSIGNMENT_OPERATOR)) != null) {
+                    ASTVariable astVariable = createASTVariable(token.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), 0);
+                    expressionStack.push(astVariable);
+                    operatorStack.push(assignment);
+                    return parseExpression();
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -63,6 +89,7 @@ public class Parser {
      *
      * @throws CompilerException exception if the stacks differ from what is expected.
      */
+
     private void pushOperatorOnExpressionStack() throws CompilerException {
         Token operator = operatorStack.pop();
         if (operator.getTokenType().isUnaryOperator()) {
@@ -133,6 +160,9 @@ public class Parser {
                 }
                 operatorStack.push(token);
 
+            } else if (token.getTokenType() == TokenType.END_OF_STATEMENT) {
+                break;
+
             } else {
                 throw new CompilerException("Syntax error", token.getLocation(), source);
             }
@@ -144,6 +174,38 @@ public class Parser {
 
         typeCheck(expressionStack.peek());
         return expressionStack.peek();
+    }
+
+    Token found(TokenType tokenType) {
+        if (tokens.peek().getTokenType() == tokenType) {
+            return tokens.poll();
+        } else {
+            return null;
+        }
+    }
+
+    Token found(TokenTypeGroup tokenTypeGroup) {
+        if (tokens.peek().getTokenType().getTokenTypeGroup() == tokenTypeGroup) {
+            return tokens.poll();
+        } else {
+            return null;
+        }
+    }
+
+    Token expect(TokenType tokenType) throws CompilerException {
+        Token token = tokens.poll();
+        if (token.getTokenType() != tokenType) {
+            throw new CompilerException(String.format("Expected (%s)", token.getTokenType().toString()), token.getLocation());
+        }
+        return token;
+    }
+
+    Token expect(TokenTypeGroup tokenTypeGroup) throws CompilerException {
+        Token token = tokens.poll();
+        if (token.getTokenType().getTokenTypeGroup() != tokenTypeGroup) {
+            throw new CompilerException(String.format("Expected (%s)", token.getTokenType().getTokenTypeGroup().toString()), token.getLocation());
+        }
+        return token;
     }
 
     public ASTNode getAstRootNode() {

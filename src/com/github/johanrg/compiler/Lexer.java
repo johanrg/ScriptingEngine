@@ -57,6 +57,7 @@ public class Lexer {
                 } else if (balancedParantheses < 0) {
                     throw new CompilerException("Expected ';'", new Location(line, column), source);
                 }
+                addToken(new Token(TokenType.END_OF_STATEMENT, new Location(line, column), c));
                 eatTheChar();
 
             } else if (c == '\0') {
@@ -183,7 +184,7 @@ public class Lexer {
             c = peekAtChar();
         } while (isContinuingIdentifier(c));
 
-        if (identify.isKeyword(identifier.toString())) {
+        if (identify.isKeyword(identifier.toString()) || identify.isTypeDefiner(identifier.toString())) {
             return new Token(identify.getType(identifier.toString()), location, identifier.toString());
         }
 

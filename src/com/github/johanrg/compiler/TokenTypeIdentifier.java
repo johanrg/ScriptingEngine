@@ -18,10 +18,15 @@ class TokenTypeIdentifier {
         }
     }
 
-    boolean isKeyword(String tokenStr) {
-        TokenType token = tokens.get(tokenStr);
+    boolean isTypeDefiner(String tokenStr) {
+        TokenType type = tokens.get(tokenStr);
+        return type != null && type.getTokenTypeGroup() == TokenTypeGroup.TYPEDEF;
+    }
 
-        return token != null && token.isKeyword();
+    boolean isKeyword(String tokenStr) {
+        TokenType type = tokens.get(tokenStr);
+
+        return type != null && type.isKeyword();
     }
 
     boolean isNumber(TokenType tokenType) {
@@ -30,15 +35,15 @@ class TokenTypeIdentifier {
     }
 
     boolean isOperator(String tokenStr) {
-        TokenType token = tokens.get(tokenStr);
+        TokenType type = tokens.get(tokenStr);
 
-        return token != null && token.isOperator();
+        return type != null && type.isOperator();
     }
 
     TokenType getType(String tokenStr) {
-        TokenType token = tokens.get(tokenStr);
-        if (token != null) {
-            return token;
+        TokenType type = tokens.get(tokenStr);
+        if (type != null) {
+            return type;
         } else {
             return TokenType.NONE;
         }
