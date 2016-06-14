@@ -12,8 +12,8 @@ class TokenTypeIdentifier {
 
     TokenTypeIdentifier() {
         for (TokenType type : TokenType.values()) {
-            if (!type.toString().equals("")) {
-                tokens.put(type.toString(), type);
+            if (!type.getSymbol().equals("")) {
+                tokens.put(type.getSymbol(), type);
             }
         }
     }
@@ -42,6 +42,15 @@ class TokenTypeIdentifier {
 
     TokenType getType(String tokenStr) {
         TokenType type = tokens.get(tokenStr);
+        if (type != null) {
+            return type;
+        } else {
+            return TokenType.NONE;
+        }
+    }
+
+    TokenType getType(char c) {
+        TokenType type = tokens.get(Character.toString(c));
         if (type != null) {
             return type;
         } else {

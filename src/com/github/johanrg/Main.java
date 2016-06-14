@@ -12,16 +12,20 @@ public class Main {
             ASTNode r;
 
         try {
-            l = new Lexer("int a = 10;");
+            StringBuilder sb = new StringBuilder();
+            sb.append("int a;\n")
+                    .append("a = 10;\n")
+                    .append("{\n")
+                    .append("int b = 10;\n")
+                    .append("}\n");
+
+            l = new Lexer(sb.toString());
             p = new Parser(l);
-            e = new Expression(p.getAstRootNode());
-            r = e.solve();
-            System.out.println(r);
         } catch (CompilerException e1) {
             System.out.println(e1.getMessage());
         }
-/*
 
+/*
         try {
             l = new Lexer("");
             p = new Parser(l);
@@ -112,7 +116,6 @@ public class Main {
         } catch (CompilerException e1) {
             System.out.println(e1.getMessage());
         }
-
 */
 
     }

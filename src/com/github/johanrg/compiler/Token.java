@@ -23,8 +23,8 @@ class Token {
             return String.format("%s %s (%d, %d)", tokenType, Float.toString((Float) value), location.getLine(), location.getColumn());
         } else if (value instanceof Double) {
             return String.format("%s %s (%d, %d)", tokenType, Double.toString((Double) value), location.getLine(), location.getColumn());
-        } else if (value instanceof String) {
-            return String.format("%s (%d, %d)", (String) value, location.getLine(), location.getColumn());
+        } else if (value instanceof String && tokenType == TokenType.IDENTIFIER) {
+            return String.format("%s %s (%d, %d)", tokenType, (String) value, location.getLine(), location.getColumn());
         }
 
         return String.format("%s (%d, %d)", tokenType, location.getLine(), location.getColumn());

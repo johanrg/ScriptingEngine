@@ -23,7 +23,9 @@ public class Parser {
         this.source = lexer.getSource();
 
         ASTNode statement = parseStatement();
-        astRootNode = parseExpression();
+        ASTNode statement2 = parseStatement();
+        astRootNode = null;
+        //astRootNode = parseExpression();
     }
 
     /**
@@ -50,33 +52,48 @@ public class Parser {
         throw new CompilerException("function typeCheck is missing something", node.getLocation(), source);
     }
 
-    private ASTVariable createASTVariable(TokenType tokenType, Location location, String name, Object value) throws CompilerException {
-
-        if (tokenType == TokenType.INT) {
-            return new ASTVariable(TokenType.TYPEDEF_INT, location, name, value);
-        } else if (tokenType == TokenType.FLOAT) {
-            return new ASTVariable(TokenType.TYPEDEF_FLOAT, location, name, value);
-        } else if (tokenType == TokenType.DOUBLE) {
-            return new ASTVariable(TokenType.TYPEDEF_DOUBLE, location, name, value);
-        } else if (tokenType == TokenType.STRING) {
-            return new ASTVariable(TokenType.TYPEDEF_STRING, location, name, value);
-        }
-        throw new CompilerException("Unsupported TYPEDEF in createASTVariable");
-    }
-
     private ASTNode parseStatement() throws CompilerException {
         Token token;
         Token assignment;
         while (!tokens.isEmpty()) {
-            if ((token = found(TokenTypeGroup.TYPEDEF)) != null) {
+            if ((token = found(TokenType.OPEN_BRACE)) != null) {
+
+            } else if ((token = found(TokenTypeGroup.TYPEDEF)) != null) {
                 Token identifier = expect(TokenType.IDENTIFIER);
+
                 if (found(TokenType.END_OF_STATEMENT) != null) {
-                    return createASTVariable(token.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), 0);
+                    if (getVariableInScope((String) identifier.getValue()) == null) {
+                        ASTVariable variable = createASTVariable(token.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), 0);
+                        setVariableInScope(variable);
+                        return variable;
+                    } else {
+                        throw new CompilerException(String.format("Identifier '%s' is already in use.", (String) identifier.getValue()), identifier.getLocation(), source);
+                    }
                 } else if ((assignment = found(TokenTypeGroup.ASSIGNMENT_OPERATOR)) != null) {
-                    ASTVariable astVariable = createASTVariable(token.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), 0);
-                    expressionStack.push(astVariable);
-                    operatorStack.push(assignment);
-                    return parseExpression();
+                    if (getVariableInScope((String) identifier.getValue()) == null) {
+                        ASTVariable variable = createASTVariable(token.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), 0);
+                        setVariableInScope(variable);
+                        expressionStack.push(variable);
+                        operatorStack.push(assignment);
+                        return parseExpression();
+                    } else {
+                        throw new CompilerException(String.format("Identifier '%s' is already in use.", (String) identifier.getValue()), identifier.getLocation(), source);
+                    }
+                } else if (found(TokenType.OPEN_PARENTHESES) != null) {
+                    if (expect(TokenType.CLOSE_PARENTHESES) != null) {
+                        // TODO(Johan): implement function definition here.
+                    }
+                }
+            } else if ((token = found(TokenType.IDENTIFIER)) != null) {
+                ASTVariable variable = getVariableInScope((String) token.getValue());
+                if (variable != null) {
+                    if ((assignment = found(TokenTypeGroup.ASSIGNMENT_OPERATOR)) != null) {
+                        expressionStack.push(variable);
+                        operatorStack.push(assignment);
+                        return parseExpression();
+                    }
+                } else {
+                    throw new CompilerException(String.format("Can not resolve identifier (%s)", (String) token.getValue()), token.getLocation(), source);
                 }
             }
         }
@@ -89,7 +106,6 @@ public class Parser {
      *
      * @throws CompilerException exception if the stacks differ from what is expected.
      */
-
     private void pushOperatorOnExpressionStack() throws CompilerException {
         Token operator = operatorStack.pop();
         if (operator.getTokenType().isUnaryOperator()) {
@@ -195,7 +211,7 @@ public class Parser {
     Token expect(TokenType tokenType) throws CompilerException {
         Token token = tokens.poll();
         if (token.getTokenType() != tokenType) {
-            throw new CompilerException(String.format("Expected (%s)", token.getTokenType().toString()), token.getLocation());
+            throw new CompilerException(String.format("Expected (%s)", tokenType.toString()), token.getLocation());
         }
         return token;
     }
@@ -203,9 +219,31 @@ public class Parser {
     Token expect(TokenTypeGroup tokenTypeGroup) throws CompilerException {
         Token token = tokens.poll();
         if (token.getTokenType().getTokenTypeGroup() != tokenTypeGroup) {
-            throw new CompilerException(String.format("Expected (%s)", token.getTokenType().getTokenTypeGroup().toString()), token.getLocation());
+            throw new CompilerException(String.format("Expected (%s)", tokenTypeGroup.toString()), token.getLocation());
         }
         return token;
+    }
+
+    private ASTVariable getVariableInScope(String identifier) {
+        return variableList.get(identifier);
+    }
+
+    private void setVariableInScope(ASTVariable variable) {
+        variableList.put(variable.getName(), variable);
+    }
+
+    private ASTVariable createASTVariable(TokenType tokenType, Location location, String name, Object value) throws CompilerException {
+
+        if (tokenType == TokenType.INT) {
+            return new ASTVariable(TokenType.TYPEDEF_INT, location, name, value);
+        } else if (tokenType == TokenType.FLOAT) {
+            return new ASTVariable(TokenType.TYPEDEF_FLOAT, location, name, value);
+        } else if (tokenType == TokenType.DOUBLE) {
+            return new ASTVariable(TokenType.TYPEDEF_DOUBLE, location, name, value);
+        } else if (tokenType == TokenType.STRING) {
+            return new ASTVariable(TokenType.TYPEDEF_STRING, location, name, value);
+        }
+        throw new CompilerException("Unsupported TYPEDEF in createASTVariable");
     }
 
     public ASTNode getAstRootNode() {

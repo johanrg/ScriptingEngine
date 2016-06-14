@@ -7,7 +7,7 @@ package com.github.johanrg.compiler;
 public enum TokenType {
     NONE("", TokenTypeGroup.NONE, 0, false),
 
-    END_OF_STATEMENT("", TokenTypeGroup.DELIMITER, 0, false),
+    END_OF_STATEMENT(";", TokenTypeGroup.DELIMITER, 0, true),
     IDENTIFIER("", TokenTypeGroup.IDENTIFIER, 0, false),
 
     TYPEDEF_INT("", TokenTypeGroup.TYPEDEF_VALUE, 0, false),
@@ -53,7 +53,11 @@ public enum TokenType {
     UNARY_POST_DECREMENT("--", TokenTypeGroup.UNARY_OPERATOR, 14, true),
 
     OPEN_PARENTHESES("(", TokenTypeGroup.DELIMITER, 0, false), // Should have precedence 15 but are handled
-    CLOSE_PARENTHESES(")", TokenTypeGroup.DELIMITER, 0, false); // separately, setting them will mess up the parser.
+    CLOSE_PARENTHESES(")", TokenTypeGroup.DELIMITER, 0, false), // separately, setting them to 15 will mess up the parser.
+    OPEN_BRACE("{", TokenTypeGroup.DELIMITER, 0, false),
+    CLOSE_BRACE("}", TokenTypeGroup.DELIMITER, 0, false),
+    OPEN_BRACKET("[", TokenTypeGroup.DELIMITER, 0, false),
+    CLOSE_BRACKET("]", TokenTypeGroup.DELIMITER, 0, false);
 
     private final String symbol;
     private final TokenTypeGroup tokenTypeGroup;
@@ -76,6 +80,10 @@ public enum TokenType {
 
     public boolean isPrecedensOperator() {
         return this.tokenTypeGroup == TokenTypeGroup.DELIMITER;
+    }
+
+    public boolean isBracer() {
+        return this == OPEN_BRACE || this == CLOSE_BRACE;
     }
 
     public boolean isBinaryOperator() {
@@ -121,8 +129,11 @@ public enum TokenType {
 
     @Override
     public String toString() {
+        StringBuilder sb = new StringBuilder();
         if (symbol.length() > 0) {
-            return symbol;
+            sb.append(symbol);
+            sb.append(" ").append(super.toString());
+            return sb.toString();
         } else {
             return super.toString();
         }
@@ -136,4 +147,7 @@ public enum TokenType {
         return precedence;
     }
 
+    public String getSymbol() {
+        return symbol;
+    }
 }

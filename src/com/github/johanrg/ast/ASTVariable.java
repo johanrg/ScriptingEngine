@@ -9,10 +9,10 @@ import com.github.johanrg.compiler.TokenType;
  */
 public class ASTVariable extends ASTNode {
     private final String name;
-    private Object value;
+    private final Object value;
 
-    public ASTVariable(TokenType tokenType, Location location, String name, Object value) {
-        super(tokenType, location);
+    public ASTVariable(TokenType variableType, Location location, String name, Object value) {
+        super(variableType, location);
         this.name = name;
         this.value = value;
     }
@@ -23,10 +23,6 @@ public class ASTVariable extends ASTNode {
 
     public Object getValue() {
         return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 
     @Override

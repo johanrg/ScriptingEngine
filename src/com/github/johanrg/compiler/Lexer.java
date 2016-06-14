@@ -18,9 +18,9 @@ public class Lexer {
     private int line = 1;
     private int column = 1;
     private final Queue<Token> tokens = new ArrayDeque<>();
-    private TokenTypeIdentifier identify = new TokenTypeIdentifier();
-    private Token previousToken = null;
+    private final TokenTypeIdentifier identify = new TokenTypeIdentifier();
     private int balancedParantheses = 0;
+    private Token previousToken = null;
 
     /**
      * The constructor creates tokens from the source string
@@ -50,6 +50,10 @@ public class Lexer {
 
             } else if (isNumber(c)) {
                 addToken(lexNumber(c));
+
+            } else if (isDelimiter(c)) {
+                addToken(new Token(identify.getType(c), new Location(line, column), c));
+                eatTheChar();
 
             } else if (isEndOfStatement(c)) {
                 if (balancedParantheses > 0) {
@@ -239,13 +243,15 @@ public class Lexer {
     }
 
     private boolean isOperator(char c) {
-        return c == '+' || c == '-' || c == '/' || c == '*' || c == '%' || c == '^' || c == '=' || c == '!' ||
-                c == '(' || c == ')' || c == '&' || c == '|' || c == '=';
+        return "+-/*%^=!()^|=".indexOf(c) != -1;
     }
 
     private boolean isContinuingOperator(char c) {
-        return c == '+' || c == '-' || c == '/' || c == '*' || c == '%' || c == '=' || c == '&'
-                || c == '|' || c == '=';
+        return "+-/*%=^|".indexOf(c) != -1;
+    }
+
+    private boolean isDelimiter(char c) {
+        return "()[]{}".indexOf(c) != -1;
     }
 
     private boolean isContinuingIdentifier(char c) {
