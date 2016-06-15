@@ -51,6 +51,9 @@ public class Lexer {
             } else if (isNumber(c)) {
                 addToken(lexNumber(c));
 
+            } else if (isQuote(c)) {
+               addToken(lexString(c));
+
             } else if (isDelimiter(c)) {
                 addToken(lexDelimiter(c));
 
@@ -147,8 +150,8 @@ public class Lexer {
         boolean isFloat = false;
 
         do {
-            eatTheChar();
             number.append(c);
+            eatTheChar();
             c = peekAtChar();
             if (c == '.') {
                 isDouble = true;
@@ -165,6 +168,24 @@ public class Lexer {
         } else {
             return new Token(TokenType.TYPEDEF_INT, location, Integer.parseInt(number.toString()));
         }
+    }
+
+    private Token lexString(char c) throws CompilerException {
+        Location location = new Location(line, column);
+        StringBuilder string = new StringBuilder();
+
+        eatTheChar();
+        c = peekAtChar();
+        while (charLeft() > 0 && !isQuote(c)) {
+            string.append(c);
+            eatTheChar();
+            c = peekAtChar();
+        }
+        if (!isQuote(c)) {
+            throw new CompilerException("Illegal line end in string literal", location, source);
+        }
+        eatTheChar();
+        return new Token(TokenType.TYPEDEF_STRING, location, string.toString());
     }
 
     /**
@@ -222,6 +243,10 @@ public class Lexer {
         return new Token(type, new Location(line, column), c);
     }
 
+    private char pollChar() {
+        return source.charAt(pos++);
+    }
+
     private char peekAtChar() {
         return source.charAt(pos);
     }
@@ -229,6 +254,10 @@ public class Lexer {
     private void eatTheChar() {
         ++pos;
         ++column;
+    }
+
+    private int charLeft() {
+        return (source.length() - 1) - pos;
     }
 
     /**
@@ -259,6 +288,10 @@ public class Lexer {
 
     private boolean isNumber(char c) {
         return (c >= '0' && c <= '9');
+    }
+
+    private boolean isQuote(char c) {
+        return c == '\"';
     }
 
     private boolean isContinuingNumber(char c) {

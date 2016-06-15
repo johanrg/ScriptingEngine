@@ -14,8 +14,8 @@ public class Main {
         try {
             StringBuilder sb = new StringBuilder();
 /*            sb.append("int a(int b, int d = 0){int x = 0;} int bbb() {int ddd = 0;}");*/
-            sb.append("int a(int b, int c){int x = 10;}");
-
+/*            sb.append("int a(int b, int c){int x = 10;}");*/
+            sb.append("int a = \"elllo");
             l = new Lexer(sb.toString());
             p = new Parser(l);
         } catch (CompilerException e1) {
