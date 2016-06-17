@@ -28,13 +28,15 @@ public class ASTVariable extends ASTNode {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()).append(" ").append(getName()).append(" = ");;
+        sb.append(super.toString()).append(" ").append(getName()).append(":");;
         if (tokenType == TokenType.TYPEDEF_DOUBLE) {
             sb.append(Double.toString((Double) value));
         } else if (tokenType == TokenType.TYPEDEF_FLOAT) {
             sb.append(Float.toString((Float) value));
         } else if (tokenType == TokenType.TYPEDEF_INT) {
             sb.append(Integer.toString((Integer) value));
+        } else if (tokenType == TokenType.TYPEDEF_STRING) {
+            sb.append("'").append((String) value).append("'");
         }
         return sb.toString();
     }

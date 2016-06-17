@@ -28,15 +28,16 @@ public class ASTNode {
 
     @Override
     public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (location != null) {
+            sb.append(String.format("(%d, %d) ", location.getLine(), location.getColumn()));
+        }
         String s = getClass().getName();
         int p = s.lastIndexOf('.');
         if (p != -1) {
-            s = s.substring(p + 1);
+            sb.append(s.substring(p + 1));
         }
-        s = s + " " + tokenType.toString();
-        if (location != null) {
-            s += String.format(" (%d, %d)", location.getLine(), location.getColumn());
-        }
-        return s;
+        sb.append(" ").append(tokenType.toString());
+        return sb.toString();
     }
 }

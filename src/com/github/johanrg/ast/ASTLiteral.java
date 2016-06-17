@@ -41,7 +41,8 @@ public class ASTLiteral extends ASTNode {
             sb.append(Float.toString((Float) value));
         } else if (tokenType == TokenType.TYPEDEF_INT) {
             sb.append(Integer.toString((Integer) value));
-        }
+        } else if (tokenType == TokenType.TYPEDEF_STRING)
+            sb.append("\"").append(value).append("\"");
         return sb.toString();
     }
 }

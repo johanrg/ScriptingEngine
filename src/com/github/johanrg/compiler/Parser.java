@@ -2,8 +2,10 @@ package com.github.johanrg.compiler;
 
 import com.github.johanrg.ast.*;
 
+import java.awt.*;
 import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.List;
 
 /**
  * The parser builds the complete AST tree for the scripting language.
@@ -12,9 +14,9 @@ import java.util.*;
  * @since 2016-06-04
  */
 public class Parser {
+    private ASTNode astRootNode;
     private final String source;
     private final Queue<Token> tokens;
-    private final ASTNode astRootNode;
     private final Stack<Token> operatorStack = new Stack<>();
     private final Stack<ASTNode> expressionStack = new Stack<>();
     private final Map<String, ASTNode> identifierList = new HashMap<>();
@@ -23,14 +25,12 @@ public class Parser {
         this.tokens = lexer.getTokens();
         this.source = lexer.getSource();
 
+        List<ASTNode> statements = new ArrayList<>();
         while (!tokens.isEmpty()) {
-            ASTNode statement = parseStatement();
-            System.out.println(statement);
+            statements.add(parseStatement());
         }
-        astRootNode = null;
-        //astRootNode = parseExpression();
+        astRootNode = new ASTCompoundStatement(new Location(0, 0), statements);
     }
-
 
     /**
      * Parses all types of statements and expressions.
@@ -45,10 +45,13 @@ public class Parser {
 
             } else if (tokens.peek().getTokenType().getTokenTypeGroup() == TokenTypeGroup.TYPEDEF) {
                 ASTNode node = parseDeclaration();
+                expect(TokenType.END_OF_STATEMENT);
                 return node;
 
             } else if (tokens.peek().getTokenType() == TokenType.IDENTIFIER) {
                 ASTNode node = parseIdentifier();
+            } else {
+                throw new CompilerException(String.format("parseStatement: %s is not supported yet.", tokens.peek()));
             }
         }
         return null;
@@ -67,7 +70,7 @@ public class Parser {
 
             if ((assignment = found(TokenTypeGroup.ASSIGNMENT_OPERATOR)) != null) { // int a = ...
                 if (getIdentifierInScope((String) identifier.getValue()) == null) {
-                    ASTVariable variable = createASTVariable(typeDef.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), 0);
+                    ASTVariable variable = createASTVariable(typeDef.getTokenType(), identifier.getLocation(), (String) identifier.getValue(), typeDef.getTokenType() == TokenType.STRING ? "" : 0);
                     setVariableInScope(variable);
                     expressionStack.push(variable);
                     operatorStack.push(assignment);
@@ -87,7 +90,7 @@ public class Parser {
                 }
                 expect(TokenType.CLOSE_PARENTHESES);
                 ASTCompoundStatement statement = parseCompoundStatement();
-                return new ASTFunction(typeDef.getLocation(), (String) identifier.getValue(), parameters, statement, typeDef.getTokenType());
+                return new ASTFunction(typeDef.getTokenType(), typeDef.getLocation(), (String) identifier.getValue(), parameters, statement);
             }
 
             if (getIdentifierInScope((String) identifier.getValue()) == null) {
@@ -217,9 +220,9 @@ public class Parser {
                 throw new CompilerException("Expected operand", operator.getLocation(), source);
             }
             ASTNode node = expressionStack.pop();
-            if (node.getType().isOperator()) {
+/*            if (node.getType().isOperator()) {
                 throw new CompilerException("Expected operand", operator.getLocation(), source);
-            }
+            }*/
             expressionStack.push(new ASTUnaryOperator(operator.getTokenType(), operator.getLocation(), node));
 
         } else {
@@ -246,17 +249,27 @@ public class Parser {
      *
      * @param node From where to start the type checking
      * @return returns the valid type unless error
-     * @throws CompilerException raises message type mismatch if error
+     * @throws CompilerException raises message type mismatch if error or invalid use of strings with other
+     * operators than BINOP_ADD
      */
     private TokenType typeCheck(ASTNode node) throws CompilerException {
         if (node instanceof ASTLiteral || node instanceof ASTVariable) {
             return node.getType();
         } else if (node instanceof ASTUnaryOperator) {
-            return typeCheck(((ASTUnaryOperator) node).getNode());
+            TokenType singleNode = typeCheck(((ASTUnaryOperator) node).getNode());
+            if (singleNode.equals(singleNode.TYPEDEF_STRING)) {
+                throw new CompilerException("Unary operators can not be used with strings", node.getLocation(), source);
+            }
+            return singleNode;
         } else if (node instanceof ASTBinaryOperator) {
             TokenType leftNode = typeCheck(((ASTBinaryOperator) node).getLeftNode());
             TokenType rightNode = typeCheck(((ASTBinaryOperator) node).getRightNode());
-            if (leftNode == rightNode) {
+            if (leftNode.equals(rightNode)) {
+                if (leftNode.equals(TokenType.TYPEDEF_STRING) &&
+                        node.getType().getTokenTypeGroup() != TokenTypeGroup.ASSIGNMENT_OPERATOR &&
+                        node.getType() != TokenType.BINOP_ADD) {
+                    throw new CompilerException("Strings can only be used with binary operator add", node.getLocation(), source);
+                }
                 return leftNode;
             } else {
                 throw new CompilerException("Type mismatch", node.getLocation(), source);

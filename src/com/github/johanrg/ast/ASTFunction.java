@@ -14,15 +14,13 @@ import java.util.List;
 public class ASTFunction extends ASTNode {
     private final String name;
     private final List<ASTNode> parameters;
-    private final ASTCompoundStatement statement;
-    private final TokenType returnType;
+    private final ASTCompoundStatement compoundStatement;
 
-    public ASTFunction(Location location, String name, List<ASTNode> parameters, ASTCompoundStatement statement, TokenType returnType) {
-        super(TokenType.NONE, location);
+    public ASTFunction(TokenType type, Location location, String name, List<ASTNode> parameters, ASTCompoundStatement compoundStatement) {
+        super(type, location);
         this.name = name;
         this.parameters = parameters;
-        this.statement = statement;
-        this.returnType = returnType;
+        this.compoundStatement = compoundStatement;
     }
 
     public String getName() {
@@ -33,11 +31,8 @@ public class ASTFunction extends ASTNode {
         return parameters;
     }
 
-    public ASTNode getStatement() {
-        return statement;
+    public ASTCompoundStatement getCompoundStatement() {
+        return compoundStatement;
     }
 
-    public TokenType getReturnType() {
-        return returnType;
-    }
 }

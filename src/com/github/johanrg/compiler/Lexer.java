@@ -97,7 +97,7 @@ public class Lexer {
 
         TokenType type = identify.getType(operator.toString());
         if (type.isBinaryOperator()) {
-            if (previousToken != null && (previousToken.getTokenType().isBinaryOperator() ||
+            if (previousToken != null && (previousToken.getTokenType().isBinaryOperator() || previousToken.getTokenType().isAssignmentOperator() ||
                     previousToken.getTokenType() == TokenType.OPEN_PARENTHESES)) {
                 if (type.isOrCanBeUnaryOperator()) {
                     if (type == TokenType.BINOP_ADD) {
@@ -176,7 +176,7 @@ public class Lexer {
 
         eatTheChar();
         c = peekAtChar();
-        while (charLeft() > 0 && !isQuote(c)) {
+        while (charLeft() > 0 && !isQuote(c) && !isNewLine(c)) {
             string.append(c);
             eatTheChar();
             c = peekAtChar();

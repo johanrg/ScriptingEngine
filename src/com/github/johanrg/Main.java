@@ -2,6 +2,7 @@ package com.github.johanrg;
 
 import com.github.johanrg.ast.ASTNode;
 import com.github.johanrg.compiler.*;
+import com.github.johanrg.compiler.Compiler;
 
 public class Main {
 
@@ -15,9 +16,11 @@ public class Main {
             StringBuilder sb = new StringBuilder();
 /*            sb.append("int a(int b, int d = 0){int x = 0;} int bbb() {int ddd = 0;}");*/
 /*            sb.append("int a(int b, int c){int x = 10;}");*/
-            sb.append("int a = \"elllo");
+/*            sb.append("int a = -1;");*/
+            sb.append("int a = -(5 * 7);");
             l = new Lexer(sb.toString());
             p = new Parser(l);
+            new Compiler(p.getAstRootNode());
         } catch (CompilerException e1) {
             System.out.println(e1.getMessage());
         }
