@@ -17,7 +17,7 @@ public class Main {
 /*            sb.append("int a(int b, int d = 0){int x = 0;} int bbb() {int ddd = 0;}");*/
 /*            sb.append("int a(int b, int c){int x = 10;}");*/
 /*            sb.append("int a = -1;");*/
-            sb.append("int a = -(5 * 7);");
+            sb.append("int a = -(5 * 7 + (44 / 2) - 1 / 2);");
             l = new Lexer(sb.toString());
             p = new Parser(l);
             new Compiler(p.getAstRootNode());

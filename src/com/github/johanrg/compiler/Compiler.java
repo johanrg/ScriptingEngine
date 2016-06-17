@@ -39,23 +39,23 @@ public class Compiler {
 
             switch (node.getType()) {
                 case BINOP_ADD:
-                    System.out.printf(depth + "ADD: %s, %s -> A\n", leftNode, rightNode);
+                    System.out.printf(depth + "ADD %s, %s -> A\n", leftNode, rightNode);
                     break;
 
                 case BINOP_SUBTRACT:
-                    System.out.printf(depth + "SUBTRACT: %s, %s -> A\n", leftNode, rightNode);
+                    System.out.printf(depth + "SUB %s, %s -> A\n", leftNode, rightNode);
                     break;
 
                 case BINOP_MUL:
-                    System.out.printf(depth + "MUL: %s, %s -> A\n", leftNode, rightNode);
+                    System.out.printf(depth + "MUL %s, %s -> A\n", leftNode, rightNode);
                     break;
 
                 case BINOP_DIV:
-                    System.out.printf(depth + "DIV: %s, %s -> A\n", leftNode, rightNode);
+                    System.out.printf(depth + "DIV %s, %s -> A\n", leftNode, rightNode);
                     break;
 
                 case BINOP_MOD:
-                    System.out.printf(depth + "MOD: %s, %s -> A\n", leftNode, rightNode);
+                    System.out.printf(depth + "MOD %s, %s -> A\n", leftNode, rightNode);
                     break;
 
                 case BINOP_EXPONENT:
@@ -63,7 +63,7 @@ public class Compiler {
                     break;
 
                 case ASSIGNMENT:
-                    System.out.printf(depth + "ASSIGNMENT %s : %s | %s\n", node.getType().getSymbol(), leftNode, rightNode);
+                    System.out.printf(depth + "MOV %s | %s\n", leftNode, rightNode);
             }
 
             return null;

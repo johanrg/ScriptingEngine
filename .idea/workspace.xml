@@ -2,16 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d28abf74-4d0e-4fac-9d95-6107f2f3f5b4" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/github/johanrg/compiler/Compiler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/Main.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTBinaryOperator.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTBinaryOperator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTFunction.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTFunction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTLiteral.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTLiteral.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTNode.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTNode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTVariable.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTVariable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/compiler/Lexer.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/compiler/Lexer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/compiler/Parser.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/compiler/Parser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/github/johanrg/compiler/Compiler.java" afterPath="$PROJECT_DIR$/src/com/github/johanrg/compiler/Compiler.java" />
     </list>
     <ignored path="AstTest.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -93,11 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="448">
-              <caret line="120" column="0" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
+            <state relative-caret-position="289">
+              <caret line="19" column="57" selection-start-line="19" selection-start-column="57" selection-end-line="19" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -116,8 +109,8 @@
       <file leaf-file-name="Compiler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/compiler/Compiler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="41" column="76" selection-start-line="41" selection-start-column="76" selection-end-line="41" selection-end-column="76" />
+            <state relative-caret-position="759">
+              <caret line="65" column="50" selection-start-line="65" selection-start-column="50" selection-end-line="65" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -133,11 +126,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ASTNode.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ASTNode.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/ast/ASTNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+            <state relative-caret-position="234">
+              <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -211,10 +204,10 @@
         <option value="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTVariable.java" />
         <option value="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTNode.java" />
         <option value="$PROJECT_DIR$/src/com/github/johanrg/ast/ASTFunction.java" />
-        <option value="$PROJECT_DIR$/src/com/github/johanrg/Main.java" />
         <option value="$PROJECT_DIR$/src/com/github/johanrg/compiler/Lexer.java" />
         <option value="$PROJECT_DIR$/src/com/github/johanrg/compiler/Parser.java" />
         <option value="$PROJECT_DIR$/src/com/github/johanrg/compiler/Compiler.java" />
+        <option value="$PROJECT_DIR$/src/com/github/johanrg/Main.java" />
       </list>
     </option>
   </component>
@@ -809,12 +802,12 @@
       <workItem from="1465914559907" duration="21646000" />
       <workItem from="1465972646995" duration="2830000" />
       <workItem from="1466076102638" duration="6882000" />
-      <workItem from="1466147729851" duration="12585000" />
+      <workItem from="1466147729851" duration="14135000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="169245000" />
+    <option name="totallyTimeSpent" value="170795000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -827,7 +820,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1235,14 +1228,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="120" column="0" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/Temp1_java-se-07-facit.zip/07-08/Thesaurus.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1279,14 +1264,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/compiler/Compiler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="41" column="76" selection-start-line="41" selection-start-column="76" selection-end-line="41" selection-end-column="76" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/ast/ASTLiteral.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="631">
@@ -1305,8 +1282,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/ast/ASTNode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+        <state relative-caret-position="234">
+          <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/compiler/Compiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="759">
+          <caret line="65" column="50" selection-start-line="65" selection-start-column="50" selection-end-line="65" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/github/johanrg/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="19" column="57" selection-start-line="19" selection-start-column="57" selection-end-line="19" selection-end-column="57" />
           <folding />
         </state>
       </provider>
